@@ -3,7 +3,6 @@ from typing import Callable
 from app.graph_store import GraphStore, TransferRecord
 
 FREEZE_THRESHOLD = 75          # MUST match contract require(riskScore > 75)
-IMPOSSIBLE_SPEED_SECONDS = 3600
 
 Rule = Callable[[GraphStore, TransferRecord], tuple[int, "str | None"]]
 
@@ -14,10 +13,15 @@ class DetectorResult:
 
 def impossible_speed_rule(store: GraphStore, rec: TransferRecord) -> tuple[int, "str | None"]:
     history = store.get_token_history(rec.token_id)
-    for prev in history[:-1]:  # all transfers before the current one
-        if prev.city != rec.city and abs(rec.timestamp - prev.timestamp) < IMPOSSIBLE_SPEED_SECONDS:
-            return 90, (f"Imkansiz hiz: token {rec.token_id} {prev.city} -> {rec.city} "
-                        f"arasinda {abs(rec.timestamp - prev.timestamp)} sn icinde hareket etti (klon suphesi).")
+    prior = history[:-1]  # transfers before the current one
+    if not prior:
+        return 0, None  # mint / first event establishes the holder
+    expected_holder = prior[-1].to_addr.lower()
+    if rec.from_addr and rec.from_addr.lower() != expected_holder:
+        held_city = prior[-1].city
+        return 90, (f"Imkansiz konum: token {rec.token_id} yasal olarak {held_city} "
+                    f"bolgesindeki sahibindeyken {rec.city} bolgesinden ({rec.from_addr}) "
+                    f"transfer girisimi yapildi (klon/cift harcama suphesi).")
     return 0, None
 
 class Detector:
