@@ -4,7 +4,6 @@ import { GraphState } from "../lib/useGraph";
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), { ssr: false });
 
 export function AIMonitor({ state }: { state: GraphState }) {
-  const frozenSet = new Set(state.frozen);
   const data = {
     nodes: state.nodes.map((n) => ({ id: n.id, label: `${n.role}\n${n.city}` })),
     links: state.edges.map((e) => ({ source: e.source, target: e.target, frozen: e.frozen })),
@@ -16,7 +15,13 @@ export function AIMonitor({ state }: { state: GraphState }) {
       <ForceGraph2D
         graphData={data}
         height={420}
-        nodeColor={(n: any) => (frozenSet.size && data.links.some((l: any) => (l.source.id ?? l.source) === n.id && l.frozen) ? "#e11" : "#2a7")}
+        nodeColor={(n: any) => (
+          anyFrozen &&
+          data.links.some((l: any) =>
+            ((l.source.id ?? l.source) === n.id || (l.target.id ?? l.target) === n.id) && l.frozen
+          )
+          ? "#e11" : "#2a7"
+        )}
         linkColor={(l: any) => (l.frozen ? "#e11" : "#999")}
         linkWidth={(l: any) => (l.frozen ? 4 : 1)}
         nodeLabel="label"
