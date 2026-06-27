@@ -17,7 +17,7 @@ TOKEN_URI="https://pharmaguard.example/metadata/{id}.json"
 ROLES=(ADMIN ORACLE MANUFACTURER DISTRIBUTOR PHARMACY_A PHARMACY_B)
 
 # --- foundry on PATH (cast is installed but not auto-on-PATH in fresh shells) ---
-export PATH="$PATH:/c/Users/$USER/.foundry/bin:$HOME/.foundry/bin"
+export PATH="$PATH:${HOME:-}/.foundry/bin:/c/Users/${USER:-${USERNAME:-}}/.foundry/bin"
 if ! command -v cast >/dev/null 2>&1; then
   echo "ERROR: 'cast' (Foundry) not found. Install Foundry or fix PATH." >&2
   exit 1
