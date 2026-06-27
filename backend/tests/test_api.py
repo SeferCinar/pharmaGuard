@@ -33,4 +33,4 @@ def test_transfer_of_frozen_token_returns_clean_error():
     client = TestClient(main.app)
     r = client.post("/transfer", json={"role": "pharmacy_b", "to_role": "pharmacy_a", "token_id": 1, "amount": 5})
     assert r.status_code == 400
-    assert "dondurulmuş" in r.json()["detail"]
+    assert "frozen" in r.json()["detail"]

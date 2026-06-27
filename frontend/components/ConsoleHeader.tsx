@@ -12,34 +12,34 @@ export function ConsoleHeader({ anyFrozen }: { anyFrozen: boolean }) {
         </div>
         <div>
           <div className="pg-brand-name">PHARMA<b>GUARD</b> GNN</div>
-          <div className="pg-brand-sub">Sahtecilik Önleme · Tedarik Zinciri Konsolu</div>
+          <div className="pg-brand-sub">Anti-Counterfeit · Supply Chain Console</div>
         </div>
       </div>
 
       <div className="pg-readout">
         <div className="pg-stat">
-          <span className="pg-stat-k">Sistem</span>
+          <span className="pg-stat-k">System</span>
           <span className="pg-stat-v">
             <i className="pg-dot" />
-            {anyFrozen ? "KARANTİNA" : "İZLENİYOR"}
+            {anyFrozen ? "QUARANTINE" : "MONITORING"}
           </span>
         </div>
         <div className="pg-stat">
-          <span className="pg-stat-k">Zincir</span>
+          <span className="pg-stat-k">Chain</span>
           <span className="pg-stat-v">Monad Testnet</span>
         </div>
         <div className="pg-stat">
           <span className="pg-stat-k">Model</span>
-          <span className="pg-stat-v">GNN · Çatallanma</span>
+          <span className="pg-stat-v">GNN · Fork</span>
         </div>
         <div className="pg-threat">
-          <span className="pg-stat-k">Tehdit Düzeyi</span>
+          <span className="pg-stat-k">Threat Level</span>
           <span className="pg-threat-bars" aria-hidden>
             <i style={anyFrozen ? undefined : { background: "var(--verified)" }} />
             <i />
             <i />
           </span>
-          <span className="pg-threat-label">{anyFrozen ? "KRİTİK" : "DÜŞÜK"}</span>
+          <span className="pg-threat-label">{anyFrozen ? "CRITICAL" : "LOW"}</span>
         </div>
       </div>
     </header>

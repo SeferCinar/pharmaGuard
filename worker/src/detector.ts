@@ -78,7 +78,7 @@ export function impossibleSpeedRule(store: GraphStore, rec: TransferRecord): { r
     const heldCity = prior[prior.length - 1].city;
     return {
       risk: 90,
-      reason: `Imkansiz konum: token ${rec.tokenId} yasal olarak ${heldCity} bolgesindeki sahibindeyken ${rec.city} bolgesinden (${rec.from}) transfer girisimi yapildi (klon/cift harcama suphesi).`,
+      reason: `Impossible location: token ${rec.tokenId} is legitimately held in ${heldCity} but a transfer originated from ${rec.city} (${rec.from}) - clone/double-spend suspected.`,
     };
   }
   return { risk: 0, reason: null };

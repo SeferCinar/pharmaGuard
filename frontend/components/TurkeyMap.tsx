@@ -11,10 +11,10 @@ type IconKind = "factory" | "depot" | "pharmacy";
 type Station = { slug: string; x: number; y: number; city: string; role: string; icon: IconKind };
 
 const STATIONS: Station[] = [
-  { slug: "istanbul", x: 150.8, y: 71.2, city: "İstanbul", role: "ÜRETİCİ", icon: "factory" },
-  { slug: "ankara", x: 359.2, y: 145.4, city: "Ankara", role: "DAĞITICI", icon: "depot" },
-  { slug: "izmir", x: 52.2, y: 249.6, city: "İzmir", role: "ECZANE A", icon: "pharmacy" },
-  { slug: "gaziantep", x: 602.1, y: 343.3, city: "Gaziantep", role: "ECZANE B", icon: "pharmacy" },
+  { slug: "istanbul", x: 150.8, y: 71.2, city: "İstanbul", role: "MANUFACTURER", icon: "factory" },
+  { slug: "ankara", x: 359.2, y: 145.4, city: "Ankara", role: "DISTRIBUTOR", icon: "depot" },
+  { slug: "izmir", x: 52.2, y: 249.6, city: "İzmir", role: "PHARMACY A", icon: "pharmacy" },
+  { slug: "gaziantep", x: 602.1, y: 343.3, city: "Gaziantep", role: "PHARMACY B", icon: "pharmacy" },
 ];
 const BY_SLUG = Object.fromEntries(STATIONS.map((s) => [s.slug, s]));
 
@@ -79,7 +79,7 @@ export function TurkeyMap({ state }: { state: GraphState }) {
 
   return (
     <div className="pg-map">
-      <svg viewBox="0 0 1000 430" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Türkiye tedarik ağı haritası">
+      <svg viewBox="0 0 1000 430" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Turkey supply network map">
         <defs>
           <linearGradient id="pg-land-grad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#142029" />

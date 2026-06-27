@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className={`${chakra.variable} ${plexSans.variable} ${plexMono.variable}`}>
+    <html lang="en" className={`${chakra.variable} ${plexSans.variable} ${plexMono.variable}`}>
       <body>{children}</body>
     </html>
   );

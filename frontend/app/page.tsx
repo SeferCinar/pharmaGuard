@@ -16,7 +16,7 @@ export default function Home() {
         <section className="pg-rail">
           <div className="pg-panel">
             <div className="pg-panel-head">
-              <span className="pg-eyebrow">Operasyon Konsolu</span>
+              <span className="pg-eyebrow">Operations Console</span>
               <span className="pg-panel-tag">TOKEN #1</span>
             </div>
             <div className="pg-panel-body">
@@ -28,7 +28,7 @@ export default function Home() {
         <section className="pg-stage">
           <div className="pg-panel" style={{ display: "flex", flexDirection: "column", flex: 1 }}>
             <div className="pg-panel-head">
-              <span className="pg-eyebrow">Gözetim · Graf Sinir Ağı</span>
+              <span className="pg-eyebrow">Surveillance · Graph Neural Network</span>
               <span className="pg-panel-tag">PyTorch Geometric</span>
             </div>
             <div className="pg-panel-body" style={{ display: "flex", flexDirection: "column", flex: 1 }}>

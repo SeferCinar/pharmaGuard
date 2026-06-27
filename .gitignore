@@ -22,3 +22,7 @@ contracts/lib/
 .superpowers/
 AGENTS.md
 CLAUDE.md
+
+# transient tooling artifacts
+.playwright-mcp/
+*.egg-info/

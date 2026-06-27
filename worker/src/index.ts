@@ -143,7 +143,7 @@ export class ConsoleDO {
           functionName: "safeTransferItem", args: [from, to, BigInt(b.token_id), BigInt(b.amount), "0x"],
         });
       } catch {
-        return this.json({ detail: "Zincir reddetti: ürün dondurulmuş (sahtecilik şüphesi)" }, 400);
+        return this.json({ detail: "Chain rejected: item is frozen (suspected counterfeit)" }, 400);
       }
       const tx = await this.wallets[b.role].writeContract({
         address: this.contract, abi: PHARMA_ABI, functionName: "safeTransferItem",

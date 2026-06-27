@@ -65,7 +65,7 @@ async def transfer(body: TransferBody):
         tx = get_chain().transfer(role=body.role, to_role=body.to_role, token_id=body.token_id, amount=body.amount)
     except ContractLogicError:
         # the contract's require(!isFrozen) rejected the transfer of a quarantined token
-        raise HTTPException(status_code=400, detail="Zincir reddetti: ürün dondurulmuş (sahtecilik şüphesi)")
+        raise HTTPException(status_code=400, detail="Chain rejected: item is frozen (suspected counterfeit)")
     _ingest(get_chain().address(body.role), get_chain().address(body.to_role), body.token_id, body.amount)
     await manager.broadcast(store.snapshot())
     return {"tx": tx}

@@ -16,27 +16,27 @@ type Op = {
 
 const OPS: Op[] = [
   {
-    id: 1, num: "01", label: "İlaç üret", sub: "Üretici · Mint",
-    cell: { name: "Üretim", loc: "İstanbul" },
-    run: () => api.mint({ token_id: TID, amount: 100, name: "Kanser İlacı X", batch: "B1", expiry: 2000000000 }),
+    id: 1, num: "01", label: "Produce drug", sub: "Manufacturer · Mint",
+    cell: { name: "Production", loc: "İstanbul" },
+    run: () => api.mint({ token_id: TID, amount: 100, name: "Cancer Drug X", batch: "B1", expiry: 2000000000 }),
   },
   {
-    id: 2, num: "02", label: "Üretici → Dağıtıcı", sub: "Devir · 50 birim",
-    cell: { name: "Dağıtıcı", loc: "Ankara" },
+    id: 2, num: "02", label: "Manufacturer → Distributor", sub: "Transfer · 50 units",
+    cell: { name: "Distributor", loc: "Ankara" },
     run: () => api.transfer({ role: "manufacturer", to_role: "distributor", token_id: TID, amount: 50 }),
   },
   {
-    id: 3, num: "03", label: "Dağıtıcı → Eczane A", sub: "Devir · 20 birim",
-    cell: { name: "Eczane A", loc: "İzmir" },
+    id: 3, num: "03", label: "Distributor → Pharmacy A", sub: "Transfer · 20 units",
+    cell: { name: "Pharmacy A", loc: "İzmir" },
     run: () => api.transfer({ role: "distributor", to_role: "pharmacy_a", token_id: TID, amount: 20 }),
   },
   {
-    id: 4, num: "04", label: "Klon: Üretici → Eczane B", sub: "Bayat sahipten çatallanma", clone: true,
-    cell: { name: "Eczane B", loc: "Gaziantep" },
+    id: 4, num: "04", label: "Clone: Manufacturer → Pharmacy B", sub: "Fork from stale holder", clone: true,
+    cell: { name: "Pharmacy B", loc: "Gaziantep" },
     run: () => api.transfer({ role: "manufacturer", to_role: "pharmacy_b", token_id: TID, amount: 20 }),
   },
   {
-    id: 5, num: "05", label: "Donmuş ürünü taşımayı dene", sub: "Zincir reddetmeli (revert)",
+    id: 5, num: "05", label: "Try to move frozen item", sub: "Chain must reject (revert)",
     run: () => api.transfer({ role: "pharmacy_b", to_role: "pharmacy_a", token_id: TID, amount: 5 }),
   },
 ];
@@ -65,13 +65,13 @@ export function DemoControls() {
       /* reset is best-effort; clearing local state matters most for the demo */
     }
     setDone(new Set());
-    setLog([{ msg: "Konsol sıfırlandı", error: false }]);
+    setLog([{ msg: "Console reset", error: false }]);
   };
 
   return (
     <>
       {/* signature: chain-of-custody blister strip */}
-      <div className="pg-custody" aria-label="Gözetim zinciri">
+      <div className="pg-custody" aria-label="Chain of custody">
         {CELLS.map((op) => {
           const isDone = done.has(op.id);
           const state = isDone ? (op.clone ? "is-void" : "is-filled") : "";
@@ -115,16 +115,16 @@ export function DemoControls() {
           );
         })}
         <button className="pg-op pg-op-reset" onClick={reset}>
-          Demoyu sıfırla
+          Reset demo
         </button>
       </div>
 
       {/* telemetry */}
       <div style={{ marginTop: 16 }}>
-        <div className="pg-eyebrow" style={{ marginBottom: 8 }}>Telemetri Akışı</div>
+        <div className="pg-eyebrow" style={{ marginBottom: 8 }}>Telemetry Feed</div>
         <div className="pg-log">
           {log.length === 0 ? (
-            <div className="pg-log-empty">İşlem bekleniyor…</div>
+            <div className="pg-log-empty">Awaiting action…</div>
           ) : (
             log.map((l, i) => (
               <div className={`pg-log-line${l.error ? " is-error" : ""}`} key={i}>
