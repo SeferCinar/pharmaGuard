@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pharmaguard-backend",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-12-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "vars": {
+    "MONAD_RPC_URL": "https://testnet-rpc.monad.xyz",
+    "MONAD_CHAIN_ID": "10143",
+    "CONTRACT_ADDRESS": "0x508eA481785A2cE6043e56f74050A03CFCaC934c"
+    // the *_PK private keys are set as secrets (wrangler secret bulk ...)
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "CONSOLE", "class_name": "ConsoleDO" }]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["ConsoleDO"] }
+  ]
+}
