@@ -12,6 +12,14 @@ const ROLE_KEY_ENV: Record<string, string> = {
 };
 const ZERO = "0x0000000000000000000000000000000000000000";
 
+// Monad charges gas on gas_limit (not gas used) and pre-reserves gas_limit * maxFeePerGas,
+// so leaving these to viem's defaults demands an unrealistically large balance. Pin them.
+const TX_OPTS = {
+  gas: 250000n,                       // mint ~195k est; covers transfer/freeze too (Monad bills the limit)
+  maxFeePerGas: 300000000000n,        // 300 gwei (well above ~100 gwei base)
+  maxPriorityFeePerGas: 2000000000n,  // 2 gwei
+} as const;
+
 const CORS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
@@ -117,6 +125,7 @@ export class ConsoleDO {
       return new Response(null, { status: 101, webSocket: pair[0] });
     }
 
+    try {
     if (path === "/state") return this.json(this.store.snapshot());
 
     if (req.method === "POST" && path === "/mint") {
@@ -124,7 +133,7 @@ export class ConsoleDO {
       const tx = await this.wallets["manufacturer"].writeContract({
         address: this.contract, abi: PHARMA_ABI, functionName: "mintProduct",
         args: [this.addr("manufacturer"), BigInt(b.token_id), BigInt(b.amount), b.name, b.batch, BigInt(b.expiry), "0x"],
-        chain: this.chain, account: this.accounts["manufacturer"],
+        chain: this.chain, account: this.accounts["manufacturer"], ...TX_OPTS,
       });
       this.ingest(ZERO, this.addr("manufacturer"), b.token_id, b.amount);
       await this.save();
@@ -148,7 +157,7 @@ export class ConsoleDO {
       const tx = await this.wallets[b.role].writeContract({
         address: this.contract, abi: PHARMA_ABI, functionName: "safeTransferItem",
         args: [from, to, BigInt(b.token_id), BigInt(b.amount), "0x"],
-        chain: this.chain, account: this.accounts[b.role],
+        chain: this.chain, account: this.accounts[b.role], ...TX_OPTS,
       });
       const { rec, result } = this.ingest(from, to, b.token_id, b.amount);
       if (result.risk > FREEZE_THRESHOLD && !this.store.isFrozen(rec.tokenId)) {
@@ -156,8 +165,8 @@ export class ConsoleDO {
         try {
           await this.wallets["oracle"].writeContract({
             address: this.contract, abi: PHARMA_ABI, functionName: "flagAndFreezeProduct",
-            args: [BigInt(rec.tokenId), result.reasons[0] ?? "Anomali", result.risk],
-            chain: this.chain, account: this.accounts["oracle"],
+            args: [BigInt(rec.tokenId), result.reasons[0] ?? "Anomaly", result.risk],
+            chain: this.chain, account: this.accounts["oracle"], ...TX_OPTS,
           });
         } catch { /* freeze tx send failed; store stays frozen, chain is authoritative */ }
       }
@@ -174,6 +183,10 @@ export class ConsoleDO {
     }
 
     return new Response("not found", { status: 404, headers: CORS });
+    } catch (e) {
+      // always return CORS headers so the browser shows the real error, not a CORS red herring
+      return this.json({ detail: `Backend error: ${(e as Error)?.message ?? e}` }, 500);
+    }
   }
 
   // Hibernation API handlers (required when using acceptWebSocket)
