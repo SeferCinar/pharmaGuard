@@ -16,8 +16,8 @@ def handle_transfer_event(store, detector, chain, cities, event_args, on_update)
     result = detector.evaluate(store, rec)
     if detector.should_freeze(result) and not store.is_frozen(rec.token_id):
         reason = result.reasons[0] if result.reasons else "Anomali"
-        chain.freeze(rec.token_id, reason, result.risk)
         store.mark_frozen(rec.token_id)
+        chain.freeze(rec.token_id, reason, result.risk)
     on_update(store.snapshot())
     return result
 
