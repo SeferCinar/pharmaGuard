@@ -15,3 +15,10 @@ contracts/cache/
 contracts/broadcast/
 contracts/lib/
 .env.bak*
+
+# docs, markdown, and AI/agent assistant files (kept local, not published)
+*.md
+.claude/
+.superpowers/
+AGENTS.md
+CLAUDE.md
