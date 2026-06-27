@@ -5,6 +5,8 @@ from app import main
 class FakeChain:
     def mint(self, **k): return "0xmint"
     def transfer(self, **k): return "0xxfer"
+    def address(self, role): return "0x" + role
+    def freeze(self, *a, **k): return "0xfreeze"
 
 class FrozenChain(FakeChain):
     def transfer(self, **k): raise ContractLogicError("execution reverted")

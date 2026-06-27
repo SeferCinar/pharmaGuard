@@ -386,6 +386,48 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 @keyframes pg-stamp { 0% { opacity: 0; transform: translate(-50%, -50%) scale(1.4) rotate(-3deg); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-3deg); } }
 @keyframes pg-sweep { from { top: 0; } to { top: 100%; } }
 
+/* ---------- Turkey supply map ---------- */
+.pg-map { position: absolute; inset: 0; }
+.pg-map svg { width: 100%; height: 100%; display: block; }
+
+.pg-land {
+  fill: url(#pg-land-grad);
+  stroke: var(--line);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+/* routes between stations */
+.pg-route-base { fill: none; stroke: var(--verified-dim); stroke-width: 1.4; opacity: 0.5; }
+.pg-route-flow {
+  fill: none; stroke: var(--verified); stroke-width: 1.6; stroke-linecap: round;
+  stroke-dasharray: 1.5 11; animation: pg-flow 1s linear infinite;
+}
+.pg-route-frozen { fill: none; stroke: var(--quarantine); stroke-width: 3; stroke-linecap: round; }
+.pg-route-x { stroke: var(--quarantine); stroke-width: 2.4; stroke-linecap: round; }
+
+/* stations */
+.pg-station-ping {
+  transform-box: fill-box; transform-origin: center;
+  animation: pg-ping 2.2s ease-out infinite;
+}
+.pg-station-core { fill: var(--ink-2); stroke-width: 2; }
+.pg-station-icon { fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.pg-station.is-idle .pg-station-core { stroke: var(--mist-dim); }
+.pg-station.is-idle .pg-station-icon { stroke: var(--mist-dim); }
+.pg-station.is-idle .pg-st-city { fill: var(--mist-dim); }
+.pg-station.is-active .pg-station-core { stroke: var(--verified); }
+.pg-station.is-active .pg-station-icon { stroke: var(--verified); }
+.pg-station.is-frozen .pg-station-core { stroke: var(--quarantine); }
+.pg-station.is-frozen .pg-station-icon { stroke: var(--quarantine); }
+.pg-station.is-frozen .pg-st-city { fill: var(--quarantine); }
+
+.pg-st-city { fill: var(--paper); font-family: var(--font-mono); font-size: 13px; font-weight: 600; text-anchor: middle; }
+.pg-st-role { fill: var(--mist); font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; text-anchor: middle; }
+
+@keyframes pg-flow { to { stroke-dashoffset: -12.5; } }
+@keyframes pg-ping { 0% { transform: scale(1); opacity: 0.45; } 100% { transform: scale(2.6); opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

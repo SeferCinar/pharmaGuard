@@ -21,6 +21,10 @@ def handle_transfer_event(store, detector, chain, cities, event_args, on_update)
     on_update(store.snapshot())
     return result
 
+# Monad testnet caps the eth_getLogs block range; poll in bounded windows so a
+# request never exceeds the limit (otherwise the listener 413s and stalls).
+MAX_BLOCK_SPAN = 90
+
 async def run_listener(store: GraphStore, chain, broadcast):
     from app.config import settings
     w3 = chain.contract.w3
@@ -29,13 +33,14 @@ async def run_listener(store: GraphStore, chain, broadcast):
     while True:
         try:
             current = w3.eth.block_number
-            if current >= last_block:
-                logs = event.get_logs(from_block=last_block, to_block=current)
+            while last_block <= current:
+                to_block = min(current, last_block + MAX_BLOCK_SPAN)
+                logs = event.get_logs(from_block=last_block, to_block=to_block)
                 for log in logs:
                     handle_transfer_event(store, _shared_detector(),
                                           chain, settings.actor_cities, dict(log["args"]),
                                           lambda snap: asyncio.create_task(broadcast(snap)))
-                last_block = current + 1
+                last_block = to_block + 1
         except Exception as e:  # keep the demo alive across transient RPC hiccups
             print("listener error:", e)
         await asyncio.sleep(2)
