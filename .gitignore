@@ -1,0 +1,16 @@
+# env / secrets
+.env
+.env.local
+# python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# node
+frontend/node_modules/
+frontend/.next/
+# foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lib/
