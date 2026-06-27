@@ -6,7 +6,15 @@ async function post(path: string, body?: unknown) {
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
   });
-  if (!r.ok) throw new Error(`${path} failed: ${r.status}`);
+  if (!r.ok) {
+    let detail: string | undefined;
+    try {
+      detail = (await r.json())?.detail;
+    } catch {
+      /* non-JSON error body */
+    }
+    throw new Error(detail || `${path} failed: ${r.status}`);
+  }
   return r.json();
 }
 

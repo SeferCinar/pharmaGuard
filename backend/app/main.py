@@ -1,8 +1,9 @@
 import asyncio
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from web3.exceptions import ContractLogicError
 from app.graph_store import GraphStore
 from app.ws import manager
 from app.listener import run_listener
@@ -43,7 +44,11 @@ def mint(body: MintBody):
 
 @app.post("/transfer")
 def transfer(body: TransferBody):
-    tx = get_chain().transfer(role=body.role, to_role=body.to_role, token_id=body.token_id, amount=body.amount)
+    try:
+        tx = get_chain().transfer(role=body.role, to_role=body.to_role, token_id=body.token_id, amount=body.amount)
+    except ContractLogicError:
+        # the contract's require(!isFrozen) rejected the transfer of a quarantined token
+        raise HTTPException(status_code=400, detail="Zincir reddetti: ürün dondurulmuş (sahtecilik şüphesi)")
     return {"tx": tx}
 
 @app.post("/reset")
